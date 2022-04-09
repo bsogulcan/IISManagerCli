@@ -21,3 +21,4 @@ After downloading the release file, it is necessary to specify the server profil
     "Port": 3200
   }
 ```
+![](https://im4.ezgif.com/tmp/ezgif-4-78dacfe28e.gif)
