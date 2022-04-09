@@ -1,8 +1,10 @@
 ﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using IISManagerCli.Enums;
 using IISManagerCli.Manager;
 using IISManagerCli.Models.Dtos;
+using Microsoft.Extensions.Configuration;
 using Sharprompt;
 
 namespace IISManagerCli
@@ -14,15 +16,18 @@ namespace IISManagerCli
 
         static async Task Main(string[] args)
         {
-            //_hostAddress = "http://localhost";
-            //_port = 6200;
-            _hostAddress = Prompt.Input<string>("Host Address");
-            // if (!_hostAddress.Contains(":"))
-            // {
-            //     _hostAddress += ":" + Prompt.Input<string>("Port");
-            // }
 
-            _port = Prompt.Input<int>("Port");
+            var config = new ConfigurationBuilder().AddJsonFile("appsettings.json").Build();
+            var childProperties = config.GetChildren();
+            var profiles = childProperties.Select(children => children.Key).ToList();
+
+            var selectedProfile = Prompt.Select("Select Profile",
+                profiles.ToArray(), pageSize: 3);
+
+            _hostAddress = config.GetSection(selectedProfile + ":" + "IpAddress").Value;
+            _port = Convert.ToInt32(config.GetSection(selectedProfile + ":" + "Port").Value);
+            //_hostAddress = Prompt.Input<string>("Host Address");
+            //_port = Prompt.Input<int>("Port");
 
             var completed = false;
             var iisManager = new IISManager(_hostAddress, _port);
@@ -30,6 +35,7 @@ namespace IISManagerCli
             while (!completed)
             {
                 var processType = Prompt.Select<ProcessType>("Select Process");
+
                 switch (processType)
                 {
                     case ProcessType.Get:

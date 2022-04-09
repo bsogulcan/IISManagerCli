@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
-using System.Reflection.Metadata;
 using System.Threading;
 using System.Threading.Tasks;
 using IISManagerCli.Models;
@@ -39,6 +38,7 @@ namespace IISManagerCli.Manager
                 }
 
                 table.Print();
+
 
                 return result.Result;
             }
